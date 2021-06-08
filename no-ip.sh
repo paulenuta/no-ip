@@ -109,7 +109,7 @@ fi
 
 if [ -n "$DETECTIP" ]
 then
-	IP=$(wget -qO- "http://myexternalip.com/raw")
+	IP=$(wget -qO- "http://ifconfig.me")
 fi
 
 
@@ -126,10 +126,12 @@ then
 fi
 
 
-USERAGENT="--user-agent=\"no-ip shell script/1.0 mail@mail.com\""
+USERAGENT="--user-agent='no-ip linux shell script/1.0 mail@mail.com'"
 BASE64AUTH=$(echo '"$USER:$PASSWORD"' | base64)
-AUTHHEADER="--header=\"Authorization: $BASE64AUTH\""
-NOIPURL="https://$USER:$PASSWORD@dynupdate.no-ip.com/nic/update"
+AUTHHEADER="--header='Authorization: $BASE64AUTH'"
+# not needed with AUTHHEADER
+# NOIPURL="https://$USER:$PASSWORD@dynupdate.no-ip.com/nic/update"
+NOIPURL="https://dynupdate.no-ip.com/nic/update"
 
 
 if [ -n "$IP" ] || [ -n "$HOSTNAME" ]
@@ -155,7 +157,7 @@ fi
 while :
 do
 
-	RESULT=$(wget -qO- $AUTHHEADER $USERAGENT $NOIPURL)
+	RESULT=$(wget -qO- "$AUTHHEADER" "$USERAGENT" "$NOIPURL")
 
 	if [ -z "$RESULT" ] && [ $? -ne 0 ]
 	then
@@ -196,7 +198,7 @@ do
 			touch "$LOGFILE"
 		fi
 		DATE=$(date)
-		echo "$DATE --  $RESULT" >> "$LOGFILE"
+		#echo "$DATE --  $RESULT" >> "$LOGFILE"
 	fi
 
 	if [ $INTERVAL -eq 0 ]
